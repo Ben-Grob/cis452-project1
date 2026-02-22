@@ -20,23 +20,44 @@ int main()
     int pid;    
 
     printf("Input the desired number of nodes for the network.");
-    fgets(k, 10, stdin);
+    scanf("%d", &k);
     int pipes [k][2]; // create k pipes
+    int pids [k]; // create k process ids
 
     // Change this to loop k times making a pipe each time - use % operator
+    for(int i = 0; i < k; i++) {
+        // create a new pipe for communication
+        pipeCreationResult = pipe(pipes[i]);
+        if(pipeCreationResult < 0){
+            perror("Failed pipe creation\n");
+            exit(1);
+        }
+    }
+    /*
     pipeCreationResult = pipe(fd);
     if(pipeCreationResult < 0){
         perror("Failed pipe creation\n");
         exit(1);
     }
+    */
 
     // Change this to fork k times
-    pid = fork();
+    for(int i = 0; i < k-1; i++) {
+        // fork a new process
+        pids[i] = fork();
+        if(pids[i] < 0) // Fork failed
+        {
+            perror("Fork failed");
+            exit(1);
+        }
+    }
+
+    /*pid = fork();
     if(pid < 0) // Fork failed
     {
         perror("Fork failed");
         exit(1);
-    }
+    }*/
 
     int output = 3;
     int input;
